@@ -1,4 +1,4 @@
-robot_name = 'WRAPP_up_right_arm';
+robot_name = 'kuka_lwr';
 load(robot_name);
 close all
 
