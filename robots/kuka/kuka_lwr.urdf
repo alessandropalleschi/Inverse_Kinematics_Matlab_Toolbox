@@ -1,0 +1,331 @@
+<?xml version="1.0" ?>
+<robot name="lwr">
+
+
+
+
+  <material name="Kuka/HandGray">
+    <color rgba="0.953 0.996 0.694 1.0"/>
+  </material>
+  <material name="Kuka/SickBlue">
+    <color rgba="0.3058 0.5921 0.7294 1.0"/>
+  </material>
+  <material name="Kuka/DarkGrey">
+    <color rgba="0.3 0.3 0.3 1.0"/>
+  </material>
+  <material name="Kuka/LightGrey">
+    <color rgba="0.8 0.8 0.8 1.0"/>
+  </material>
+  <material name="Kuka/Red">
+    <color rgba="0.3 0.3 0.3 1.0"/>
+  </material>
+  <material name="Kuka/Black">
+    <color rgba="0 0 0 1.0"/>
+  </material>
+  <material name="Kuka/Orange">
+    <color rgba="1.0 0.487 0 1.0"/>
+  </material>
+  <material name="Kuka/Silver">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <material name="Kuka/Grey">
+    <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
+  <material name="Kuka/Blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+
+  <link name="world"/>
+
+  <!-- First (shoulder) element of the arm. Fixed to its parent. -->
+  <joint name="world_to_base" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="world"/>
+    <child link="arm_base_link"/>
+  </joint>
+
+  <link name="arm_base_link">
+    <inertial>
+      <mass value="2.0"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.00381666666667" ixy="0" ixz="0" iyy="0.0036" iyz="0" izz="0.00381666666667"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/lwr4plus/visual/base.STL"/>
+      </geometry>
+      <material name="Kuka/Orange"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 3.14159265" xyz="0 0 0.055"/>
+      <geometry>
+        <cylinder length="0.11" radius="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Second segment of the arm. Joint along z-axis -->
+  <joint name="arm_a1_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.11"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="176" lower="-2.967059725" upper="2.967059725" velocity="1.919862175"/>
+    <dynamics damping="0.7" friction="1.0"/>
+    <parent link="arm_base_link"/>
+    <child link="arm_1_link"/>
+  </joint>
+  <link name="arm_1_link">
+    <inertial>
+      <mass value="2.35"/>
+      <origin rpy="0 0 0" xyz="0.00000301 0.02391176 0.11939403"/>
+      <inertia ixx="0.013693809375" ixy="4.968005e-07" ixz="8.730822e-07" iyy="0.01353901875" iyz="-0.002371578125" izz="0.004089665625"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265" xyz="0 0 -0.008"/>
+      <geometry>
+        <mesh filename="meshes/lwr4plus/visual/link_1.STL"/>
+      </geometry>
+      <material name="Kuka/Orange"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.06 0.2"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="-0.291 0 0" xyz="0 0.03 0.1"/>
+      <geometry>
+        <cylinder length="0.208" radius="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Third segment of the arm. Joint along y-axis -->
+  <joint name="arm_a2_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.2005"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="176" lower="-2.0943951" upper="2.0943951" velocity="1.919862175"/>
+    <dynamics damping="0.7" friction="1.0"/>
+    <parent link="arm_1_link"/>
+    <child link="arm_2_link"/>
+  </joint>
+  <link name="arm_2_link">
+    <inertial>
+      <mass value="2.35"/>
+      <origin rpy="0 0 0" xyz="0.00000301 -0.02391175 0.08110597"/>
+      <inertia ixx="0.013693809375" ixy="-4.968005e-07" ixz="-8.730822e-07" iyy="0.01353901875" iyz="-0.002371578125" izz="0.004089665625"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265" xyz="0 0 0.0"/>
+      <geometry>
+        <mesh filename="meshes/lwr4plus/visual/link_2.STL"/>
+      </geometry>
+      <material name="Kuka/Orange"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.2"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.06 0.0"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="-0.291 0 0" xyz="0 -0.03 0.1"/>
+      <geometry>
+        <cylinder length="0.208" radius="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Fourth element of the arm. z-axis -->
+  <joint name="arm_e1_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.20"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" lower="-2.967059725" upper="2.967059725" velocity="2.23402144"/>
+    <dynamics damping="0.7" friction="1.0"/>
+    <parent link="arm_2_link"/>
+    <child link="arm_3_link"/>
+  </joint>
+  <link name="arm_3_link">
+    <inertial>
+      <mass value="2.35"/>
+      <origin rpy="0 0 0" xyz="-0.00000302 -.02391175 0.11939403"/>
+      <inertia ixx="0.013693809375" ixy="4.968005e-07" ixz="-8.730822e-07" iyy="0.01353901875" iyz="0.002371578125" izz="0.004089665625"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265" xyz="0 0 -0.008"/>
+      <geometry>
+        <mesh filename="meshes/lwr4plus/visual/link_3.STL"/>
+      </geometry>
+      <material name="Kuka/Orange"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.06 0.2"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.291 0 0" xyz="0 -0.03 0.1"/>
+      <geometry>
+        <cylinder length="0.208" radius="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- fifth element of the arm. x-axis -->
+  <joint name="arm_a3_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.20"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="100" lower="-2.0943951" upper="2.0943951" velocity="2.23402144"/>
+    <dynamics damping="0.7" friction="1.0"/>
+    <parent link="arm_3_link"/>
+    <child link="arm_4_link"/>
+  </joint>
+  <link name="arm_4_link">
+    <inertial>
+      <mass value="2.35"/>
+      <origin rpy="0 0 0" xyz="-0.00000303 .02391175 0.08110597"/>
+      <inertia ixx="0.013693809375" ixy="-4.968005e-07" ixz="8.730822e-07" iyy="0.01353901875" iyz="0.002371578125" izz="0.004089665625"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265" xyz="0 0 0.0"/>
+      <geometry>
+        <mesh filename="meshes/lwr4plus/visual/link_4.STL"/>
+      </geometry>
+      <material name="Kuka/Orange"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.2"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.06 0.0"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.291 0 0" xyz="0 0.03 0.1"/>
+      <geometry>
+        <cylinder length="0.208" radius="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Sixth element of the arm. z-axis -->
+  <joint name="arm_a4_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.20"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" lower="-2.967059725" upper="2.967059725" velocity="3.56047167"/>
+    <dynamics damping="0.7" friction="1.0"/>
+    <parent link="arm_4_link"/>
+    <child link="arm_5_link"/>
+  </joint>
+  <link name="arm_5_link">
+    <inertial>
+      <mass value="2.35"/>
+      <origin rpy="0 0 0" xyz="-0.00000303 .02391175 0.08110597"/>
+      <inertia ixx="0.0082625953125" ixy="5.603518e-07" ixz="8.553005e-07" iyy="0.007622859375" iyz="-0.0024984386719" izz="0.0033607035156"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265" xyz="0 0 -0.008"/>
+      <geometry name="arm_5_geom">
+        <mesh filename="meshes/lwr4plus/visual/link_5.STL"/>
+      </geometry>
+      <material name="Kuka/Orange"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.04 0.19"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="-0.207 0 0" xyz="0 0.02 0.095"/>
+      <geometry>
+        <cylinder length="0.198" radius="0.07"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Seventh element of the arm. z-axis -->
+  <joint name="arm_a5_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.19"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="38" lower="-2.0943951" upper="2.0943951" velocity="3.21140582"/>
+    <dynamics damping="0.7" friction="1.0"/>
+    <parent link="arm_5_link"/>
+    <child link="arm_6_link"/>
+  </joint>
+  <link name="arm_6_link">
+    <inertial>
+      <mass value="1.1"/>
+      <origin rpy="0 0 0" xyz="-0.00000001 -.00447585 -0.00290105"/>
+      <inertia ixx="0.0029610587891" ixy="-2.319e-10" ixz="2.3622e-09" iyy="0.0029691074219" iyz="2.46776962e-05" izz="0.0032060654297"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/lwr4plus/visual/link_6.STL"/>
+      </geometry>
+      <material name="Kuka/Grey"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 3.14159265" xyz="0 -0.01 0"/>
+      <geometry>
+        <sphere radius="0.08"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Eighth element of the arm. z-axis -->
+  <joint name="arm_a6_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.078"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="38" lower="-2.967059725" upper="2.967059725" velocity="3.21140582"/>
+    <dynamics damping="0.7" friction="1.0"/>
+    <parent link="arm_6_link"/>
+    <child link="arm_7_link"/>
+  </joint>
+  <link name="arm_7_link">
+    <inertial>
+      <mass value="0.25"/>
+      <origin rpy="0 0 0" xyz="0 0 -0.014685"/>
+      <!-- <inertia ixx="${414.478149 / inertia_scale}" ixy="0.0" ixz="0.0" iyy="${414.478149 / inertia_scale}" iyz="0.0" izz="${694.374329 / inertia_scale}" /> -->
+      <!-- <inertia ixx="${2 * tip_mass * 0.1 * 0.1 / 5}"  ixy="0"  ixz="0" iyy="${2 * tip_mass * 0.1 * 0.1 / 5}" iyz="0" izz="${2 * tip_mass * 0.1 * 0.1 / 5}" /> -->
+      <inertia ixx="0.000633333333333" ixy="0" ixz="0" iyy="0.000633333333333" iyz="0" izz="0.000633333333333"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 3.14159265" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="meshes/lwr4plus/visual/link_7.STL"/>
+      </geometry>
+      <material name="Kuka/DarkGrey"/>
+    </visual>
+  </link>
+</robot>
+
+
+
+
