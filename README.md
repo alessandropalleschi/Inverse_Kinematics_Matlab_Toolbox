@@ -11,6 +11,7 @@ Matlab 2020a with Robotic System Toolbox
   - Franka Emika Panda without end-effector
   - Franka Emika Panda equipped with the Pisa/IIT SoftHand as end-effector
   - UR10 without end-effector
+  - UR10 with SoftHand
   - WRAPP-up robotic platform for logistics
 
 ## Current IK Algorithms:
@@ -19,5 +20,5 @@ Matlab 2020a with Robotic System Toolbox
  
  ## TO DO:
  - [ ] Include null-based IK algorithm
- - [ ] Include UR10 equipped with the Pisa/IIT SoftHand as end-effector
+ - [x] Include UR10 equipped with the Pisa/IIT SoftHand as end-effector
  - [ ] Generalize the Reverse Priority algorithm to include different constraints
