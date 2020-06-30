@@ -1,4 +1,4 @@
-function [traj,p,q] = generateTrajectories(tfin,Ts,joint0,robot,ee,pos_wp,quat_wp)
+function [traj,p,q] = generateTrajectories(nsamples,joint0,robot,ee,pos_wp,quat_wp)
 %GENERATETRAJECTORIES Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,7 +6,8 @@ T0 = getTransform(robot,joint0,ee);
 P0 = T0(1:3,4);
 R0 = T0(1:3,1:3);
 q0 = rotm2quat(R0);
-
+tfin = 1;
+Ts = 1/(nsamples-1);
 wayPoints = [P0 pos_wp];
 timePoints = linspace(0,tfin, size(wayPoints,2));
 tSamples = linspace(0,tfin, tfin/Ts+1);

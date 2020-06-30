@@ -1,4 +1,4 @@
-function [qd_des] = reverse_priority_step(N, qd_prev, x_des_cur, xd_des_cur, unil_constr, x_cons_cur, param_vect, J, x_cur)
+function [qd_des,h_lim] = reverse_priority_step(N, qd_prev, x_des_cur, xd_des_cur, unil_constr, x_cons_cur, param_vect, J, x_cur)
 %{
 ===========================================================================
 	This function executes one single step of the reverse priority
@@ -121,6 +121,7 @@ for p = N:-1:1     % e.g.: 3 2 1
             xd_lower{p}, ...
             beta_pos, ...
             beta_vel);
+        h_lim(p) = h(p);
     else                    % p is a task
         h(p) = 1;
     end

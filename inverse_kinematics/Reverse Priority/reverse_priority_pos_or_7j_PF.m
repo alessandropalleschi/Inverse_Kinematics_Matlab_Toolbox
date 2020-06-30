@@ -26,9 +26,12 @@ for i = 1:1:N-1
 end
 % ---------------------------------------------------------------------
 % k = 2;
+qaux_old = q(:,1);
 for k=2:iter_num
+    exit = 0;
     % specific part
     
+    while(exit==0)
         %     qd1 = qd(1, end);
         %     qd2 = qd(2, end);
         %     qd3 = qd(3, end);
@@ -38,15 +41,15 @@ for k=2:iter_num
         %     qd7 = qd(7, end);
         
         % numeric jacobian
-        Jorp = geometricJacobian(robot,q(:,k-1)',ee);
+        Jorp = geometricJacobian(robot,qaux_old',ee);
         J{N} = [Jorp(4:6,:);Jorp(1:3,:)];
-        T = getTransform(robot,q(:,k-1)',ee);
+        T = getTransform(robot,qaux_old',ee);
         
         % actual x
         x{N,k} = {T(1:3,4);T(1:3,1:3)};
         
-        x(1:length(q(:,k-1)),k) = num2cell(q(:,k-1));
-        x(length(q(:,k-1))+1:2*length(q(:,k-1)),k) = num2cell(q(:,k-1));
+        x(1:length(qaux_old),k) = num2cell(qaux_old);
+        x(length(qaux_old)+1:2*length(qaux_old),k) = num2cell(qaux_old);
         
         
         % -----------------------------------------------------------------
@@ -65,7 +68,7 @@ for k=2:iter_num
                 % compute orientation error, using quaternions
                 e_o = eo_using_quat(x_cur{p}{2}, x_des_cur{p}{2});
                 e_p = x_cur{p}{1} - x_des_cur{p}{1};
-                e = -[e_p;e_o];
+                e = [e_p;e_o];
             end
             
             
@@ -92,7 +95,7 @@ for k=2:iter_num
                 w_ee = skew_2_vect(w_ee_hat);
                 
                 
-                xd_des_cur{p} = [(x_des_cur{p}{1} - x_des_prev{p}{1}) / Ts;w_ee];
+                xd_des_cur{p} = 0*[(x_des_cur{p}{1} - x_des_prev{p}{1}) / Ts;w_ee];
             end
         end
         
@@ -113,7 +116,8 @@ for k=2:iter_num
         %         disp('... starting computation');
         % n
         %     tic
-            [qd_des] = reverse_priority_step(N, qd_prev, x_des_cur, ...
+        if(norm(e)>0.0001)
+            [qd_des,h_lim] = reverse_priority_step(N, qd_prev, x_des_cur, ...
                 xd_des_cur, unil_constr, ...
                 x_cons_cur, param_vect, ...
                 J, x_cur);
@@ -123,7 +127,16 @@ for k=2:iter_num
             %     user message
             %             disp('... done');
             
-            q(:,k) = q(:,k-1) + qd_des*Ts;
+            qaux_old = qaux_old + qd_des*Ts;
+            if(sum(h_lim)>0.9)
+                q(:,k) = qaux_old;
+                exit = 1;
+            end
+        else
+            q(:,k) = qaux_old;
+            exit = 1;
+        end
+    end
     % append to vectors
     %             e = [e, e_new];
     %n = norm(qd_des)./norm(qd_com);

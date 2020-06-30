@@ -67,7 +67,7 @@ dt = 2*ds./((b_bound(1:end-1)).^(0.5)+(b_bound(2:end)).^0.5);
 ff = sum(2*ds./((b(1:end-1)).^(0.5)+(b(2:end)).^0.5).');
 opti.minimize( ff);
 
-opti.subject_to(qddd_bound_min.' <= 2*acc(:,end)/dt(1) <= qddd_bound_max.');
+opti.subject_to(qddd_bound_min.' <= 2*acc(:,1)/dt(1) <= qddd_bound_max.');
 for i =1:size(q_R,1)
     opti.subject_to(qddd_bound_min(i) <=(acc(i,2:end)-acc(i,1:end-1))./(dt(1:end-1)/2+dt(2:end)/2)<=qddd_bound_max(i));
 end

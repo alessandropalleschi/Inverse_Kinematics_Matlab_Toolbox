@@ -1,4 +1,4 @@
-function [q_out] = RP_inverse(T,Ts,q_0_right,robot,limits,ee)
+function [q_out] = RP_inverse_PF(T,Ts,q_0_right,robot,limits,ee)
 
     
 %task definition
