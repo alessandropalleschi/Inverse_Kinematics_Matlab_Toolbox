@@ -44,3 +44,6 @@ plot(0:0.1:length(qopt)*0.1-0.1,qopt')
 
 % plot(qout_CLIK')
 hold off
+
+t = 0:0.1:length(qopt)*0.1-0.1;
+q_sim = timeseries(qopt.',t);
