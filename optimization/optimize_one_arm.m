@@ -1,4 +1,4 @@
-function [qr]=optimize_one_arm(q_R,robot,scale)
+function [qr,t_resamp]=optimize_one_arm(q_R,s,time_step,robot,scale)
 import casadi.*
 
 qd_bound = robot.limits.velocity.max;
@@ -8,7 +8,7 @@ qddd_bound_max = robot.limits.jerk.max;
 qdd_bound_min = robot.limits.acceleration.min;
 qddd_bound_min = robot.limits.jerk.min;
 
-if nargin==3
+if nargin==5
     if scale < 1
         scale = 1;
     end
@@ -17,7 +17,7 @@ if nargin==3
     qdd_bound_min = qdd_bound_min./scale;
     
 end
-s = 0:1/(size(q_R,2)-1):1;
+% s = 0:1/(size(q_R,2)-1):1;
 sm = (s(2:end)+s(1:end-1))/2;
 
 
@@ -32,8 +32,14 @@ q_full = [q_R];
 % qp(i,:) = gradient(q(i,:),sm);
 % qpp(i,:) = gradient(qp(i,:),sm);
 % end
-
-[ ~, qp, qpp, ~] = quinticpolytraj( q_full,s,sm);
+% [ qm, qp, qpp, ~] = bsplinepolytraj( q_full,s,saug);
+for i=1:size(q_full,1)
+    fff{i} = fit(s.',q_full(i,:).','smoothingspline','SmoothingParam',1-1e-15);
+    qm(i,:) = fff{i}(sm);
+    qp(i,:) = gradient(qm(i,:),sm);
+    qpp(i,:) = gradient(qp(i,:),sm);
+  
+end
 b_bound = [];
 % [ ~, qps, ~, ~] = quinticpolytraj( q_full,s,s);
 for i=1:size(q_full,1)
@@ -101,7 +107,7 @@ t = 0;
 t = cumsum(2*ds.'./(sqrt(bk(2:end))+sqrt(bk(1:end-1))));
 
 t_tot = [0 t.'];
-t_resamp = 0:0.1:t_tot(end);
+t_resamp = 0:time_step:t_tot(end);
 
 for i=1:size(t_resamp,2)
     s_res_pos(i) = s_resamp(s,t_tot,bk,ak,t_resamp(i), 1); %indice 1 con posizioni, 2 lineare, 3 fwd integration
@@ -111,9 +117,13 @@ end
 % for i = 1:7
 % qr(i,:) = interp1(s,q_R(i,:),s_res_pos,'pchip');
 % end
-qr = quinticpolytraj(q_full,s,s_res_pos);
+for i=1:size(q_full,1)
+    qr(i,:) = fff{i}(s_res_pos);
+end
+% qr = quinticpolytraj(q_full,s,s_res_pos);
 if(isequal(qr(:,end),q_R(:,end)))
 else
     qr = [qr q_R(:,end)];
+    t_resamp = [t_resamp t_resamp(end)+time_step];
 end
 end
