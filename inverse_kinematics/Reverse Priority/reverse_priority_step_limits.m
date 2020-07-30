@@ -80,16 +80,6 @@ h = cell(N,1);
 
 for p = N:-1:1     % e.g.: 3 2 1
     
-    % augmented jacobian
-    Jra{p} = [J{p}; Jra{p+1}];
-    
-    % pseudoinverse
-    Jra_pinv{p} = damped_pseudo_inverse(Jra{p}, ...
-        DPI_lambda_max, ...
-        DPI_epsilon);
-    
-    % rank-update
-    T{p} = rank_update_lincols(J{p}, Jra_pinv{p});
     
     % error computation and xd computation
     if unil_constr(p)
@@ -114,6 +104,7 @@ for p = N:-1:1     % e.g.: 3 2 1
         
         % xd given by lower priority tasks, required
         % by unilateral_constr_activation_check
+	xd{p} = 0;
         xd_lower{p} = J{p}*(qd{p+1});
         for i=1:length(xd_lower{p})
         hj(i) = unilateral_constr_activation_check(  unil_constr(p), ...
@@ -123,12 +114,65 @@ for p = N:-1:1     % e.g.: 3 2 1
             beta_pos, ...
             beta_vel);
         end
-        h_lim{p} = hj;
-        h{p} = diag(hj);
-    else                    % p is a task
+        h{p} = max(hj);
+        HJ = diag((hj>0));
+        J{p} = HJ*J{p};
+        J{p}( ~any(J{p},2), : ) = [];
+        if(isempty(J{p}))
+            Jra{p} = Jra{p+1};
+            J_tilde = clean_jac(J{p}.', Jra{p+1}.').';
+            %      disp('J_tilde = '); disp(J_tilde);
+            
+            if ~isempty(J_tilde)
+                %pinv_J_tilde = damped_pseudo_inverse(J_tilde, DPI_lambda_max, DPI_epsilon);
+                pinv_J_tilde = pinv(J_tilde, DPI_epsilon);
+                Pt{p+1} = eye(size(J{p},2)) - pinv_J_tilde*J_tilde;
+            else
+                Pt{p+1} = eye(size(J{p},2));
+            end
+            
+            qd{p} = qd{p+1};
+            continue;
+        end
+        Jra{p} = [J{p}; Jra{p+1}];
+        
+        J_tilde = clean_jac(J{p}.', Jra{p+1}.').';
+        %      disp('J_tilde = '); disp(J_tilde);
+        
+        if ~isempty(J_tilde)
+            %pinv_J_tilde = damped_pseudo_inverse(J_tilde, DPI_lambda_max, DPI_epsilon);
+            pinv_J_tilde = pinv(J_tilde, DPI_epsilon);
+            Pt{p+1} = eye(size(J{p},2)) - pinv_J_tilde*J_tilde;
+        else
+            Pt{p+1} = eye(size(J{p},2));
+        end
+    else 
+    % p is a task
+            Jra{p} = [J{p}; Jra{p+1}];
+        
+        J_tilde = clean_jac(J{p}.', Jra{p+1}.').';
+        %      disp('J_tilde = '); disp(J_tilde);
+        
+        if ~isempty(J_tilde)
+            %pinv_J_tilde = damped_pseudo_inverse(J_tilde, DPI_lambda_max, DPI_epsilon);
+            pinv_J_tilde = pinv(J_tilde, DPI_epsilon);
+            Pt{p+1} = eye(size(J{p},2)) - pinv_J_tilde*J_tilde;
+        else
+            Pt{p+1} = eye(size(J{p},2));
+        end
         h{p} = 1;
+	        e{p,1} = [x_des_cur{p}{1} - x_cur{p}{1}; eo_using_quat(x_des_cur{p}{2}, x_cur{p}{2})];
+        % compute position er
+        
+        % compute tasks vel
+        
+        K_ = diag([K(p)*ones(6,1).']);
+        xd{p} = xd_des_cur{p} + K_*e{p};
+
     end
-    qd{p} = qd{p+1} + h{p} * T{p}*pinv(J{p}*T{p}) * (xd{p} - J{p}*qd{p+1});
+        pinv_Jp_Pt = pinv(J{p}*Pt{p+1}, DPI_epsilon);
+
+    qd{p} = qd{p+1} + h{p} * pinv_Jp_Pt * (xd{p} - J{p}*qd{p+1});
 end
 
 % the real vel. is qd{1}
