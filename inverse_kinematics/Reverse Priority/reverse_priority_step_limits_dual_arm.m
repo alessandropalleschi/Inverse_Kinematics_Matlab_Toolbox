@@ -142,7 +142,7 @@ for p = N:-1:1     % e.g.: 3 2 1
                 beta_vel);
         end
         %         h_lim{p} = hj;
-        h{p} = 0*diag(hj);
+        h{p} = diag(hj);
         HJ = diag((hj>0));
         J{p} = HJ*J{p};
         J{p}( ~any(J{p},2), : ) = [];

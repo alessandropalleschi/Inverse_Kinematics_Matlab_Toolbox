@@ -28,8 +28,12 @@ time_step = 0.01;
 
 toc
 figure()
-show(robot.model,qout_RP(:,end)')
-% light
-hold on
-% show(robot.model,qout_CLIK(:,end)')
-hold off
+show(robot.model,qout_RP(:,end)','Frames','off')
+light
+zlim([0 inf])
+xlim([-inf inf])
+ylim([-inf inf])
+axis equal
+% hold on
+% % show(robot.model,qout_CLIK(:,end)')
+% hold off
