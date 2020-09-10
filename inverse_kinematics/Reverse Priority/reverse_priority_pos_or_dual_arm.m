@@ -30,7 +30,7 @@ k = 2;
 % qd_des = 1;
 e = 1;
 while(norm(e)>1e-3)   % specific part
-%    norm(e) 
+   norm(e) 
     %     qd1 = qd(1, end);
     %     qd2 = qd(2, end);
     %     qd3 = qd(3, end);
