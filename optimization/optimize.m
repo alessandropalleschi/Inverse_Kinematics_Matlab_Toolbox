@@ -1,4 +1,4 @@
-function [qr,t_resamp]=optimize_one_arm(q_R,s,time_step,robot,scale)
+function [qr,t_resamp]=optimize(q_R,s,time_step,robot,scale)
 import casadi.*
 
 qd_bound = robot.limits.velocity.max;
