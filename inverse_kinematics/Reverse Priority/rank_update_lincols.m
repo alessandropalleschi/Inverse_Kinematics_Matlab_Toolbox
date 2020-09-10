@@ -55,4 +55,3 @@ if size(T, 2) < J_dim
      disp('WARNING: There are not enough lin. ind. columns in T!');
 end
     
-end   

@@ -50,4 +50,3 @@ OUTPUT
          error('There are not enough lin. ind. columns in T');
     end
     
-end   
