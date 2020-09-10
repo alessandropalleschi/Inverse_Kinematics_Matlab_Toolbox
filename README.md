@@ -1,5 +1,5 @@
-# Manipulator-IK-Toolbox
-Matlab Implementation of IK Algorithm for Serial Manipulators
+# Inverse_Kinematics_Matlab_Toolbox
+Matlab Implementation of Inverse Kinematics Algorithms
 
 ## Requirements:
 Matlab 2020a with Robotic System Toolbox
@@ -13,12 +13,15 @@ Matlab 2020a with Robotic System Toolbox
   - UR10 without end-effector
   - UR10 with SoftHand
   - WRAPP-up robotic platform for logistics
+  - Abb Yumi
+  - Alan mobile manipulator
+  - AlterEgo wheeled humanoid Robot
 
 ## Current IK Algorithms:
- - CLIK algorithm (position and orientation task)
- - Reverse Priority algorithm (position and orientation task and constraints on the joint limits)
+ - Single Arm CLIK algorithm (position and orientation task)
+ - Single Arm Reverse Priority algorithm (position and orientation task and constraints on the joint limits)
+ - Dual Arm Reverse Priority algorithm (position and orientation task and constraints on the joint limits)
  
  ## TO DO:
  - [ ] Include null-based IK algorithm
- - [x] Include UR10 equipped with the Pisa/IIT SoftHand as end-effector
- - [ ] Generalize the Reverse Priority algorithm to include different constraints
+ - [ ] Generalize the Reverse Priority algorithm to include different constraints and tasks
