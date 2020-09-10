@@ -1,0 +1,4 @@
+*.asv
+
+.inverse_kinematics/Null_Based_Inversion/
+.inverse_kinematics/Stack_of_Task/
